@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>header</title>
+</head>
+<body>
+<!--    다른페이지로 포함-->
+    <div th:fragment="header">
+        <!-- Navigation-->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container px-4 px-lg-5">
+                    <span>
+                        <a class="navbar-brand" href="/main">
+                            <img src="" style="width: 28px; padding-bottom: 4px;">
+                            <b style="font-size: 28px; color:#60BFB6; text-shadow: -1px 0 #0D0D0D, 0 1px #0D0D0D, 1px 0 #0D0D0D, 0 -1px #0D0D0D; margin-right: -8px">MY</b>
+                            <b style="font-size: 28px; color:#F2D22E; text-shadow: -1px 0 #0D0D0D, 0 1px #0D0D0D, 1px 0 #0D0D0D, 0 -1px #0D0D0D;">Bucket</b>
+                        </a>
+                    </span>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-5">
+                        <li class="nav-item">
+                            <a class="nav-link" aria-current="page" href="/main">메인페이지</a>
+                        </li>
+                        <li class="nav-item"><a class="nav-link" href="#!">EMPTY</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#!">EMPTY</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#!">EMPTY</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#!">EMPTY</a></li>
+
+                        <li class="nav-item" sec:authorize="isAuthenticated()">
+                            <a class="nav-link" href="/main/board/write">기록하기</a>
+                        </li>
+                        <li class="nav-item" sec:authorize="isAnonymous()">
+                            <a class="nav-link" href="/members/login">로그인</a>
+                        </li>
+                        <li class="nav-item" sec:authorize="isAnonymous()">
+                            <a class="nav-link" href="/members/new">회원가입</a>
+                        </li>
+
+                        <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
+                            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">내 정보</a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="#!">마이페이지</a></li>
+                                <li><hr class="dropdown-divider" /></li>
+                                <li><a class="dropdown-item" href="/members/logout">로그아웃</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <form class="d-flex">
+                        <button class="btn btn-outline-dark" type="submit">
+                            <i class="bi-cart-fill me-1"></i>
+                            Cart
+                            <span class="badge bg-dark text-white ms-1 rounded-pill">0</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Header-->
+        <header class="bg-dark py-5">
+            <div class="container px-4 px-lg-5 my-5">
+                <div class="text-center text-white">
+                    <h1 class="display-4 fw-bolder">DO your bucket list!</h1>
+                    <p class="lead fw-normal text-white-50 mb-0">당신의 버킷 리스트를 기록하고 공유해보세요!</p>
+                </div>
+            </div>
+        </header>
+    </div>
+</body>
+</html>

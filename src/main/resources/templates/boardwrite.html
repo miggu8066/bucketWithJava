@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/default}">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Board Write</title>
+    <!-- include summernote css/js -->
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#summernote').summernote({
+                placeholder: 'Your Bucket!',
+                tabsize: 2,
+                height: 500,
+                callbacks: {	//여기 부분이 이미지를 첨부하는 부분
+                    onImageUpload : function(files) {
+                        uploadSummernoteImageFile(files[0],this);
+                    },
+                    onPaste: function (e) {
+                        var clipboardData = e.originalEvent.clipboardData;
+                        if (clipboardData && clipboardData.items && clipboardData.items.length) {
+                            var item = clipboardData.items[0];
+                            if (item.kind === 'file' && item.type.indexOf('image/') !== -1) {
+                                e.preventDefault();
+                            }
+                        }
+                    }
+                }
+            })
+        });
+        function uploadSummernoteImageFile(file, editor) {
+            data = new FormData();
+            data.append("file", file);
+            $.ajax({
+                data : data,
+                type : "POST",
+                url : "/uploadSummernoteImageFile",
+                contentType : false,
+                processData : false,
+                success : function(data) {
+                    //항상 업로드된 파일의 url이 있어야 한다.
+                    $(editor).summernote('insertImage', data.url);
+                }
+            });
+        }
+    </script>
+</head>
+<body>
+    <div layout:fragment="write">
+        <h1>Your Bucket!</h1>
+        <form action="/main/board/write-done" method="post">
+            <table th:border="1" style="width: 100%;">
+                <tr>
+                    <td>제목 </td>
+                    <td><input type="text" name="title" style="width: 100%;"></td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <textarea id="summernote" name="content"></textarea>
+                    </td>
+                </tr>
+            </table>
+            <div class="text-center">
+                <input class="btn btn-dark my-2" type="submit" value="게시글 저장">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+            </div>
+        </form>
+    </div>
+</body>
+</html>
