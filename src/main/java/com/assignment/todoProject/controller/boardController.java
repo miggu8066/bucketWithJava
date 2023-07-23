@@ -6,12 +6,16 @@ import com.assignment.todoProject.service.BoardService;
 import com.assignment.todoProject.service.MemberService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.data.domain.Page;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.security.Principal;
 
@@ -66,6 +70,34 @@ public class boardController {
         return "boardview";
     }
 
+    // 게시글 수정 글 불러오기
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping(value = "/board/modify/{id}")
+    public String boardModify(Model model,
+                              @PathVariable("id") Integer id) {
+
+        model.addAttribute("boardmodify",boardService.boardview(id));
+
+        return "boardmodify";
+    }
+    //게시글 수정 하기
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping(value = "/board/modify/{id}")
+    public String boardModifyDone(@Valid Board board, BindingResult bindingResult, Integer id, Principal principal) {
+        if (bindingResult.hasErrors()) {
+            return "boardmodify";
+        }
+        Board boardTemp = boardService.boardview(id);
+        if (!boardTemp.getAuthor().getEmail().equals(principal.getName())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정 권한이 없습니다.");
+        }
+        boardTemp.setTitle(board.getTitle());
+        boardTemp.setContent(board.getContent());
+
+        return "redirect:/main";
+    }
+
+    // 게시글 삭제하기
     @GetMapping("/board/board-delete")
     public String boardDelete(Integer id) {
 

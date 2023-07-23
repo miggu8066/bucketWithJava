@@ -23,9 +23,11 @@
                     <div class="my-3">
                         <a th:href="@{/main/board/board-delete(id=${boardview.id})}" class="btn btn-sm btn-outline-secondary"
                            sec:authorize="isAuthenticated()"
+                           th:if="${boardview.author != null and #authentication.getPrincipal().getUsername() == boardview.author.email}"
                            th:text="삭제"></a>
-                        <a th:href="@{|/question/modify/${boardview.id}|}" class="btn btn-sm btn-outline-secondary"
+                        <a th:href="@{|/main/board/modify/${boardview.id}|}" class="btn btn-sm btn-outline-secondary"
                            sec:authorize="isAuthenticated()"
+                           th:if="${boardview.author != null and #authentication.getPrincipal().getUsername() == boardview.author.email}"
                            th:text="수정"></a>
                     </div>
                 </div>

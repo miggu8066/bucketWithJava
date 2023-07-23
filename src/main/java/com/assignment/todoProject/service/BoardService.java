@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +30,17 @@ public class BoardService {
         this.boardRepository.save(b);
 
     }
+
+    // 글 수정 처리
+    public void modify(Board board, String title, String content) {
+
+        board.setTitle(title);
+        board.setContent(content);
+        board.setModifiedDate(board.getModifiedDate());
+
+        this.boardRepository.save(board);
+    }
+
     // 글 목록 처리
     public List<Board> boardListAll() {
         return boardRepository.findAll();
