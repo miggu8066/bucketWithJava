@@ -32,10 +32,10 @@ public class BoardService {
     }
 
     // 글 수정 처리
-    public void modify(Board board, String title, String content) {
+    public void modify(Board board, Integer id) {
 
-        board.setTitle(title);
-        board.setContent(content);
+        board.setTitle(board.getTitle());
+        board.setContent(board.getContent());
         board.setModifiedDate(board.getModifiedDate());
 
         this.boardRepository.save(board);

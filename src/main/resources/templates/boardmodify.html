@@ -51,15 +51,15 @@
 <body>
     <div layout:fragment="write">
         <h1>Your Bucket!</h1>
-        <form action="/main/board/modify" method="post">
+        <form th:action="@{/main/board/modifyDone/{id}(id=${boardModify.id})}" method="post">
             <table th:border="1" style="width: 100%;">
                 <tr>
                     <td>제목 </td>
-                    <td><input type="text" name="title" style="width: 100%;" th:value="${boardmodify.title}"></td>
+                    <td><input type="text" name="title" style="width: 100%;" th:value="${boardModify.title}"></td>
                 </tr>
                 <tr>
                     <td colspan="2">
-                        <textarea id="summernote" name="content" th:text="${boardmodify.content}"></textarea>
+                        <textarea id="summernote" name="content" th:text="${boardModify.content}"></textarea>
                     </td>
                 </tr>
             </table>

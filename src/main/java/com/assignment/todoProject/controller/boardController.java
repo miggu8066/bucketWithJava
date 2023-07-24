@@ -76,14 +76,14 @@ public class boardController {
     public String boardModify(Model model,
                               @PathVariable("id") Integer id) {
 
-        model.addAttribute("boardmodify",boardService.boardview(id));
+        model.addAttribute("boardModify",boardService.boardview(id));
 
         return "boardmodify";
     }
     //게시글 수정 하기
     @PreAuthorize("isAuthenticated()")
-    @PostMapping(value = "/board/modify/{id}")
-    public String boardModifyDone(@Valid Board board, BindingResult bindingResult, Integer id, Principal principal) {
+    @PostMapping(value = "/board/modifyDone/{id}")
+    public String boardModifyDone(@PathVariable("id") Integer id, @Valid Board board, BindingResult bindingResult, Principal principal) {
         if (bindingResult.hasErrors()) {
             return "boardmodify";
         }
@@ -91,8 +91,11 @@ public class boardController {
         if (!boardTemp.getAuthor().getEmail().equals(principal.getName())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정 권한이 없습니다.");
         }
+
         boardTemp.setTitle(board.getTitle());
         boardTemp.setContent(board.getContent());
+        boardTemp.setModifiedDate(board.getModifiedDate());
+        boardService.modify(boardTemp, id);
 
         return "redirect:/main";
     }
