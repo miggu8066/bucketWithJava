@@ -53,9 +53,9 @@ public class BoardService {
     }
 
     // 글 삭제 처리
-    public void boarddelete(Integer id) {
+    public void boarddelete(Board board) {
 
-        boardRepository.deleteById(id);
+        this.boardRepository.delete(board);
     }
 
     // 페이징 처리
@@ -66,4 +66,15 @@ public class BoardService {
         return this.boardRepository.findAll(pageable);
     }
 
+    public Page<Board> boardSearchList(String searchKeyword, Pageable pageable) {
+
+        return boardRepository.findByTitleContaining(searchKeyword, pageable);
+
+    }
+
+    // 추천 기능
+    public void vote(Board board, Member member) {
+        board.getVoter().add(member);
+        this.boardRepository.save(board);
+    }
 }

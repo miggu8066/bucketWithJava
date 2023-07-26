@@ -7,6 +7,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Set;
 
 @Entity
 @Data
@@ -31,6 +32,9 @@ public class Answer {
 
     @ManyToOne
     private Member author;
+
+    @ManyToMany
+    Set<Member> voter;
 
     @PrePersist
     public void onPrePersist(){

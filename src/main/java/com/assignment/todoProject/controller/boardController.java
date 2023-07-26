@@ -6,6 +6,7 @@ import com.assignment.todoProject.service.BoardService;
 import com.assignment.todoProject.service.MemberService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.parameters.P;
@@ -34,8 +35,17 @@ public class boardController {
 
     // 메인 페이지
     @GetMapping()
-    public String main(Model model, @RequestParam(value = "page", defaultValue = "0") int page) {
-        Page<Board> paging = this.boardService.getList(page);
+    public String main(Model model,
+                       @RequestParam(value = "page", defaultValue = "0")
+                       int page,
+                       String searchKeyword) {
+        Page<Board> paging = null;
+
+        if(searchKeyword == null) {
+            paging = this.boardService.getList(page);
+        }else {
+            paging = this.boardService.boardSearchList(searchKeyword, Pageable.ofSize(page));
+        }
         model.addAttribute("paging", paging);
 
         return "boardList";
@@ -62,6 +72,7 @@ public class boardController {
     }
 
     // 특정 글 불러오기
+    @PreAuthorize("isAuthenticated()")
     @GetMapping(value = "/board/board-view/{id}")
     public String boardView(Model model, @PathVariable("id") Integer id) {
 
@@ -101,11 +112,25 @@ public class boardController {
     }
 
     // 게시글 삭제하기
-    @GetMapping("/board/board-delete")
-    public String boardDelete(Integer id) {
-
-        boardService.boarddelete(id);
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/board/delete/{id}")
+    public String boardDelete(@PathVariable("id") Integer id, Principal principal) {
+        Board board = this.boardService.boardview(id);
+        if (!board.getAuthor().getEmail().equals(principal.getName())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "삭제권한이 없습니다.");
+        }
+        this.boardService.boarddelete(board);
 
         return "redirect:/main";
+    }
+
+    // 추천 기능
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/board/vote/{id}")
+    public String questionVote(Principal principal, @PathVariable("id") Integer id) {
+        Board board = this.boardService.boardview(id);
+        Member member = this.memberService.getUser(principal.getName());
+        this.boardService.vote(board, member);
+        return String.format("redirect:/main/board/board-view/%s", id);
     }
 }

@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Data
@@ -38,6 +39,9 @@ public class Board {
 
     @ManyToOne
     private Member author;
+
+    @ManyToMany
+    Set<Member> voter;
 
     @PrePersist
     public void onPrePersist(){

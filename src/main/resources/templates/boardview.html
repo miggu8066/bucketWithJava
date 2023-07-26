@@ -18,20 +18,31 @@
                     <div class="d-flex justify-content-end">
                         <div class="badge bg-light text-dark p-2 text-start">
                             <div class="mb-2">
+                                Last_Update
                                 <span th:if="${boardview.author != null}" th:text="${boardview.author.name}"></span>
                             </div>
-                            <div th:text="${boardview.createdDate}"></div>
+                            <div th:text="${boardview.modifiedDate}"></div>
                         </div>
                     </div>
                     <div class="my-3">
-                        <a th:href="@{/main/board/board-delete(id=${boardview.id})}" class="btn btn-sm btn-outline-secondary"
-                           sec:authorize="isAuthenticated()"
-                           th:if="${boardview.author != null and #authentication.getPrincipal().getUsername() == boardview.author.email}"
-                           th:text="삭제"></a>
+                        <a th:href="@{|/main/board/vote/${boardview.id}|}"
+                           class="recommend btn btn-sm btn-outline-secondary"
+                           th:attr="onclick='return confirm(`추천하시겠습니까?`)'">
+                            추천
+                            <span class="badge rounded-pill bg-success" th:text="${#lists.size(boardview.voter)}"></span>
+                        </a>
                         <a th:href="@{|/main/board/modify/${boardview.id}|}" class="btn btn-sm btn-outline-secondary"
                            sec:authorize="isAuthenticated()"
                            th:if="${boardview.author != null and #authentication.getPrincipal().getUsername() == boardview.author.email}"
-                           th:text="수정"></a>
+                           th:text="수정"
+                           th:attr="onclick='return confirm(`수정하시겠습니까?`)'"></a>
+
+                        <a th:href="@{|/main/board/delete/${boardview.id}|}"
+                           class="btn btn-sm btn-outline-secondary delete-btn"
+                           sec:authorize="isAuthenticated()"
+                           th:if="${boardview.author != null and #authentication.getPrincipal().getUsername() == boardview.author.email}"
+                           th:text="삭제"
+                           th:attr="onclick='return confirm(`정말로 삭제하시겠습니까?`)'">삭제</a>
                     </div>
                 </div>
             </div>
@@ -60,5 +71,6 @@
             </form>
         </div>
     </div>
+
 </body>
 </html>
